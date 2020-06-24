@@ -26,6 +26,13 @@ filesets:
       - data/cyc1000.sdc : {file_type : SDC}
       - rtl/cyc1000_clock_gen.v : {file_type : verilogSource}
       - rtl/observer_cyc1000.v : {file_type : verilogSource}
+
+  alhambra:
+    files:
+      - data/alhambra.pcf    : {file_type : PCF}
+      - rtl/alhambra_clock_gen.v : {file_type : verilogSource}
+      - rtl/observer_alhambra.v : {file_type : verilogSource}
+      
   tb:
     files:
       - tb/observer_tb.cpp : {file_type : cppSource}
@@ -47,6 +54,17 @@ targets:
     description : Maxed out configuration for cyc1000. Supports 3-axis accelerometer, user button and 27 junctions that just send messages
     generate : [bcmux29, dummyprinters]
 
+  alhambra:
+    default_tool: icestorm
+    description : Standard configuration for Alhambra board. Supports 3-axis accelerometer, user button and a junction that just prints status
+    filesets : [rtl, alhambra]
+    generate : [bcmux3, alhambra_junctions]
+    tools:
+      icestorm:
+        nextpnr_options : [--hx8k, --package, "tq144:4k", --freq, 16]
+        pnr : next
+    toplevel : observer_alhambra
+
   sim:
     default_tool: verilator
     description : Simulation target with 29 different junctions
@@ -60,6 +78,15 @@ targets:
 
 generate:
   cyc1000_junctions:
+    generator: junction
+    parameters:
+      user_btn:
+        collector: gpio
+      dummyprint:
+      g_sen:
+        collector: spi
+
+  alhambra_junctions:
     generator: junction
     parameters:
       user_btn:
