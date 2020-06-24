@@ -1,4 +1,9 @@
 set_io  i_clk       49
 set_io  i_user_btn  34 #SW1
-set_io  wire q      45 #LED0
+set_io  q      45 #LED0
 set_io  o_uart_tx   61 #FTDI TX
+
+set_io  spi_g_sen_sclk 1
+set_io  spi_g_sen_cs_n 2
+set_io  spi_g_sen_mosi 3
+set_io  spi_g_sen_miso 4
