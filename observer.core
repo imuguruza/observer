@@ -32,7 +32,8 @@ filesets:
       - data/alhambra.pcf    : {file_type : PCF}
       - rtl/alhambra_clock_gen.v : {file_type : verilogSource}
       - rtl/observer_alhambra.v : {file_type : verilogSource}
-      
+    depend : [i2c]
+
   tb:
     files:
       - tb/observer_tb.cpp : {file_type : cppSource}
