@@ -8,7 +8,9 @@ module observer_alhambra
  output wire spi_g_sen_mosi,
  input wire  spi_g_sen_miso,
  output wire q,
- output wire o_uart_tx);
+ output wire o_uart_tx,
+ inout wire io_temp_humidity_sen_sda, //io_sda,
+ input wire i_temp_humidity_sen_scl);
 
    wire      wb_clk;
    wire      wb_rst;
@@ -28,6 +30,8 @@ module observer_alhambra
       .o_cs_n   (spi_g_sen_cs_n),
       .o_mosi   (spi_g_sen_mosi),
       .i_miso   (spi_g_sen_miso),
+      .i_scl  (i_temp_humidity_sen_scl),
+      .io_sda (io_temp_humidity_sen_sda),
       .o_uart_tx  (q));
 
 endmodule
