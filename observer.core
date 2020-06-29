@@ -30,6 +30,7 @@ filesets:
   alhambra:
     files:
       - data/alhambra.pcf    : {file_type : PCF}
+      - rtl/collector_i2c.v : {file_type : verilogSource}
       - rtl/alhambra_clock_gen.v : {file_type : verilogSource}
       - rtl/observer_alhambra.v : {file_type : verilogSource}
     depend : [i2c]
@@ -92,9 +93,10 @@ generate:
     parameters:
       user_btn:
         collector: gpio
-      dummyprint:
       g_sen:
         collector: spi
+      temp_humidity_sen:
+        collector: i2c
 
   dummyprinters:
     generator: junction
