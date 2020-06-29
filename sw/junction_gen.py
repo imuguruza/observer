@@ -60,6 +60,9 @@ class JunctionGenerator(Generator):
                                    Port('o_cs_n', 'o_'+name+'_cs_n'),
                                    Port('o_mosi', 'o_'+name+'_mosi'),
                                    Port('i_miso', 'i_'+name+'_miso'),]
+            elif collector == 'i2c':
+                junction_ports += [Port('i_scl', 'i_'+name+'_scl'),
+                                   Port('io_sda', 'io_'+name+'_sda'),]
             junction_ports += [
                 Port('o_tdata'  , 'tdata'+str(i)),
                 Port('o_tlast'  , 'tlast'+str(i)),
@@ -74,6 +77,9 @@ class JunctionGenerator(Generator):
                 junctions.add(ModulePort('o_'+name+'_cs_n'  , 'output'))
                 junctions.add(ModulePort('o_'+name+'_mosi'  , 'output'))
                 junctions.add(ModulePort('i_'+name+'_miso'  ,  'input'))
+            elif collector == 'i2c':
+                junctions.add(ModulePort('i_'+name+'_scl'  , 'input'))
+                junctions.add(ModulePort('io_'+name+'_sda'  , 'inout'))
             junctions.add(Wire('tdata'+str(i), 8))
             junctions.add(Wire('tlast'+str(i)))
             junctions.add(Wire('tvalid'+str(i)))
@@ -153,6 +159,28 @@ class JunctionGenerator(Generator):
                                        Port('o_wb_rdt', 'wb_rdt'),
                                        Port('o_wb_ack', 'wb_ack'),
                                        ]))
+        elif collector == 'i2c':
+            junction_top.add(ModulePort('i_scl'  , 'input'))
+            junction_top.add(ModulePort('io_sda'  , 'inout'))
+            junction_top.add(Wire('wb_adr', 32))
+            junction_top.add(Wire('wb_dat', 32))
+            junction_top.add(Wire('wb_we'))
+            junction_top.add(Wire('wb_stb'))
+            junction_top.add(Wire('wb_rdt', 32))
+            junction_top.add(Wire('wb_ack'))
+            junction_top.add(Instance('collector_i2c', 'i2c', [],
+                                      [Port('i_clk'   , 'i_clk'),
+                                       Port('i_rst'   , 'i_rst'),
+                                       Port('arst_i'  , "1'b1"),
+                                       Port('i_scl'  , 'i_scl'),
+                                       Port('io_sda'  , 'io_sda'),
+                                       Port('i_wb_adr', 'wb_adr[4:0]'),
+                                       Port('i_wb_dat', 'wb_dat'),
+                                       Port('i_wb_we' , 'wb_we'),
+                                       Port('i_wb_stb', 'wb_stb'),
+                                       Port('o_wb_rdt', 'wb_rdt'),
+                                       Port('o_wb_ack', 'wb_ack'),
+                                       ]))
         junction_top.add(ModulePort('o_tdata'  , 'output', 8))
         junction_top.add(ModulePort('o_tlast'  , 'output'))
         junction_top.add(ModulePort('o_tvalid' , 'output'))
@@ -162,6 +190,11 @@ class JunctionGenerator(Generator):
             Port('i_clk'   , 'i_clk'),
             Port('i_rst'   , 'i_rst'),]
         if collector == 'spi':
+            ports += [
+                Port('o_wb_coll_adr', 'wb_adr'),
+                Port('o_wb_coll_dat', 'wb_dat'),
+                Port('o_wb_coll_we' , 'wb_we'),]
+        elif collector == 'i2c':
             ports += [
                 Port('o_wb_coll_adr', 'wb_adr'),
                 Port('o_wb_coll_dat', 'wb_dat'),
@@ -178,6 +211,8 @@ class JunctionGenerator(Generator):
         if collector == 'gpio':
             ports.append(Port('i_wb_coll_rdt', "{31'd0,wb_rdt}"))
         elif collector == 'spi':
+            ports.append(Port('i_wb_coll_rdt', 'wb_rdt'))
+        elif collector == 'i2c':
             ports.append(Port('i_wb_coll_rdt', 'wb_rdt'))
         else:
             ports.append(Port('i_wb_coll_rdt', "32'd0"))
