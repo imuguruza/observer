@@ -6,6 +6,8 @@ module observer
    output wire o_cs_n,
    output wire o_mosi,
    input wire  i_miso,
+   inout wire io_sda,
+   input wire i_scl,
    output wire o_uart_tx);
 
    parameter memfile_emitter = "emitter.hex";
@@ -23,6 +25,10 @@ module observer
       .o_g_sen_cs_n    (o_cs_n),
       .o_g_sen_mosi    (o_mosi),
       .i_g_sen_miso    (i_miso),
+      .o_g_sen_sclk    (o_sclk),
+      .o_g_sen_cs_n    (o_cs_n),
+      .i_temp_humidity_sen_scl  (i_scl),
+      .io_temp_humidity_sen_sda (io_sda),
       .o_tdata   (tdata),
       .o_tlast   (tlast),
       .o_tvalid  (tvalid),
