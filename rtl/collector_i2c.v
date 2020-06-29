@@ -23,11 +23,31 @@ module collector_i2c
    assign o_wb_rdt = {24'd0, rdt};
 
    //Problems with next assigments:
-   assign i_scl = scl_padoen_oe ? 1’bz : scl_pad_o;
-   assign io_sda = sda_padoen_oe ? 1’bz: sda_pad_o;
+   // assign i_scl = scl_padoen_oe ? 1’bz : scl_pad_o;
+   // assign io_sda = sda_padoen_oe ? 1’bz: sda_pad_o;
    //--------------------------------------------------//
-   assign scl_pad_i = i_scl;
-   assign sda_pad_i = io_sda;
+   // assign scl_pad_i = i_scl;
+   // assign sda_pad_i = io_sda;
+   //Replace with:
+   SB_IO #(
+      .PIN_TYPE(6'b 1010_01),
+      .PULLUP(1'b 1)
+    ) io_pin_scl (
+      .PACKAGE_PIN(i2c_temp_humidity_sen_scl),
+      .OUTPUT_ENABLE(scl_padoen_oe),
+      .D_OUT_0(scl_pad_o),
+      .D_IN_0(scl_pad_i)
+    );
+
+    SB_IO #(
+       .PIN_TYPE(6'b 1010_01),
+       .PULLUP(1'b 1)
+     ) io_pin_sda (
+       .PACKAGE_PIN(i2c_temp_humidity_sen_sda),
+       .OUTPUT_ENABLE(sda_padoen_oe),
+       .D_OUT_0(sda_pad_o),
+       .D_IN_0(sda_pad_i)
+     );
 
    i2c_master_top #(.ARST_LVL (0)) i2c_top (
 
