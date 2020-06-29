@@ -2,8 +2,8 @@ module collector_i2c
   (input wire 	     i_clk,
    input wire 	      i_rst,
    //---- I2C -----
-   output wire 	      sda,
-   inout wire 	      scl,
+   inout wire 	      io_sda,
+   input wire 	      i_scl,
    //--------------
    input wire [4:0]   i_wb_adr,
    input wire [31:0]  i_wb_dat,
@@ -22,19 +22,19 @@ module collector_i2c
 
    assign o_wb_rdt = {24'd0, rdt};
 
-   //Taken from
-   //https://opencores.org/websvn/filedetails?repname=i2c&path=%2Fi2c%2Ftrunk%2Fdoc%2Fi2c_specs.pdf
-   assign scl = scl_padoen_oe ? 1’bz : scl_pad_o;
-   assign sda = sda_padoen_oe ? 1’bz: sda_pad_o;
-   assign scl_pad_i = scl;
-   assign sda_pad_i = sda;
+   //Problems with next assigments:
+   assign i_scl = scl_padoen_oe ? 1’bz : scl_pad_o;
+   assign io_sda = sda_padoen_oe ? 1’bz: sda_pad_o;
+   //--------------------------------------------------//
+   assign scl_pad_i = i_scl;
+   assign sda_pad_i = io_sda;
 
    i2c_master_top #(.ARST_LVL (0)) i2c_top (
 
  		// wishbone interface
  		.wb_clk_i(i_clk),
- 		.wb_rst_i(1'b0),
- 		.arst_i(i_rst),
+ 		.wb_rst_i(i_rst),
+ 		.arst_i(1'b1),
  		.wb_adr_i(i_wb_adr[4:2]),
  		.wb_dat_i(i_wb_dat[7:0]),
  		.wb_dat_o(rdt),
@@ -45,12 +45,12 @@ module collector_i2c
  		.wb_inta_o(),
 
  		// i2c signals
- 		.scl_pad_i(scl),
- 		.scl_pad_o(scl0_o),
- 		.scl_padoen_o(scl0_oen),
- 		.sda_pad_i(sda),
- 		.sda_pad_o(sda0_o),
- 		.sda_padoen_o(sda0_oen)
+ 		.scl_pad_i(scl_pad_i),
+ 		.scl_pad_o(scl_pad_o),
+ 		.scl_padoen_o(sda_padoen_oe),
+ 		.sda_pad_i(sda_pad_i),
+ 		.sda_pad_o(sda_pad_o),
+ 		.sda_padoen_o(sda_padoen_oe)
  	);
 
 endmodule
