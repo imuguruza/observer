@@ -171,7 +171,7 @@ class JunctionGenerator(Generator):
             junction_top.add(Instance('collector_i2c', 'i2c', [],
                                       [Port('i_clk'   , 'i_clk'),
                                        Port('i_rst'   , 'i_rst'),
-                                       Port('arst_i'  , "1'b1"),
+                                       #Port('arst_i'  , "1'b1"),
                                        Port('i_scl'  , 'i_scl'),
                                        Port('io_sda'  , 'io_sda'),
                                        Port('i_wb_adr', 'wb_adr[4:0]'),
