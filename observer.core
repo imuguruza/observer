@@ -95,6 +95,7 @@ generate:
         collector: gpio
       g_sen:
         collector: spi
+        memfile: mpu9250_sen.hex #Replace original binary with MPU9250 sensor binary
       temp_humidity_sen:
         collector: i2c
 
